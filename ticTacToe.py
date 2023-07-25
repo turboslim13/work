@@ -18,37 +18,36 @@ def check_end(event: Event) -> None:
     global CELL_COUNT, GAME_IS_RUNNING
 
     origin_ind = CELL_POSITIONS[event.widget]
-    for i in (-1, 0):
-        for j in (-1, 0, 1):
-            if i == 0 and j == 0: break
-            line_length = 0
-            depth_levels = [1, 1]
-            ray = 0
-            while True:
-                cell_ind = origin_ind[0] + i*depth_levels[ray],\
-                           origin_ind[1] + j*depth_levels[ray]
-                if (0 <= cell_ind[0] < SIDE_LENGTH and\
-                        0 <= cell_ind[1] < SIDE_LENGTH) and\
-                        (buttons[cell_ind[0]][cell_ind[1]]['text'] ==\
-                        event.widget['text']):
-                    line_length += 1
-                    depth_levels[ray] += 1
-                    if line_length + 1 == LINE_LENGTH:
-                        GAME_IS_RUNNING = False
-                        for step in range(line_length + 1):
-                            buttons[cell_ind[0] + (-i*step)]\
+    poses = ((-1, -1), (-1, 0), (-1, 1), (0, -1))
+    for i, j in poses:
+        line_length = 0
+        depth_levels = [1, 1]
+        ray = 0
+        while True:
+            cell_ind = origin_ind[0] + i*depth_levels[ray],\
+                       origin_ind[1] + j*depth_levels[ray]
+            if (0 <= cell_ind[0] < SIDE_LENGTH and\
+                    0 <= cell_ind[1] < SIDE_LENGTH) and\
+                    (buttons[cell_ind[0]][cell_ind[1]]['text'] ==\
+                    event.widget['text']):
+                line_length += 1
+                depth_levels[ray] += 1
+                if line_length + 1 == LINE_LENGTH:
+                    GAME_IS_RUNNING = False
+                    for step in range(line_length + 1):
+                        buttons[cell_ind[0] + (-i*step)]\
                                 [cell_ind[1] + (-j*step)]['foreground'] = \
                                 '#5c5c5c' 
-                        label['text'] = event.widget['text'] + ' Выиграли!'
-                        return
+                    label['text'] = event.widget['text'] + ' Выиграли!'
+                    return
                 else:
                     depth_levels[ray] = 0
-                    if depth_levels[0] == 0 and depth_levels[1] == 0:
+                    if depth_levels == [0, 0]:
                         break
                 
                 if depth_levels[not ray] != 0:
                     i, j = -i, -j
-                    ray = 1 if ray == 0 else 0
+                    ray = not ray
 
     CELL_COUNT -= 1
     if CELL_COUNT == 0: 
