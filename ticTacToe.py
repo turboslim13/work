@@ -1,4 +1,4 @@
-from tkinter import *
+    from tkinter import *
 from random import randint
 
 
@@ -56,7 +56,6 @@ def check_end(event: Event) -> None:
             for j in range(SIDE_LENGTH):
                 buttons[i][j]['foreground'] = '#5c5c5c'
         label['text'] = 'Ничья!'
-        return
 
 
 def click(event: Event) -> None:
